@@ -32,7 +32,14 @@
                             <outlet property="delegate" destination="1pA-cF-4PF" id="01j-W5-jT0"/>
                         </connections>
                     </tableView>
-                    <navigationItem key="navigationItem" title="Todoey" id="rhT-zM-uDT"/>
+                    <navigationItem key="navigationItem" title="Todoey" id="rhT-zM-uDT">
+                        <barButtonItem key="rightBarButtonItem" systemItem="add" id="3jx-zT-Oip">
+                            <color key="tintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                            <connections>
+                                <action selector="addButtonPressed:" destination="1pA-cF-4PF" id="HGf-Bw-yTx"/>
+                            </connections>
+                        </barButtonItem>
+                    </navigationItem>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Wa7-5w-aVX" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
