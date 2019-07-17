@@ -38,14 +38,10 @@ class TodoListViewController: UITableViewController {
 
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "ToDoItemCell", for: indexPath)
+        let item = itemArray[indexPath.row]
 
-        cell.textLabel?.text = itemArray[indexPath.row].title
-
-        if itemArray[indexPath.row].done {
-            cell.accessoryType = .checkmark
-        } else {
-            cell.accessoryType = .none
-        }
+        cell.textLabel?.text = item.title
+        cell.accessoryType = item.done ? .checkmark : .none
 
         return cell
     }
