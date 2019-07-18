@@ -6,15 +6,15 @@
 //  Copyright © 2019 Yiding He. All rights reserved.
 //
 
-import UIKit
 import CoreData
+import UIKit
 
 class TodoListViewController: UITableViewController {
     var itemArray = [Item]()
 
     let dataFilePath = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first?.appendingPathComponent("Items.plist")
     let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
-    
+
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view.
@@ -81,10 +81,25 @@ class TodoListViewController: UITableViewController {
         tableView.reloadData()
     }
 
-    func loadItems() {
-        let request : NSFetchRequest<Item> = Item.fetchRequest()
+    func loadItems(with request: NSFetchRequest<Item> = Item.fetchRequest()) {
         do {
-           itemArray = try context.fetch(request)
+            itemArray = try context.fetch(request)
+        } catch {
+            print("error: \(error)")
+        }
+
+        tableView.reloadData()
+    }
+}
+
+extension TodoListViewController: UISearchBarDelegate {
+    func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
+        let request: NSFetchRequest<Item> = Item.fetchRequest()
+        let predicate = NSPredicate(format: "title CONTAINS[cd] %@", searchBar.text!)
+        request.predicate = predicate
+
+        do {
+            itemArray = try context.fetch(request)
         } catch {
             print("error: \(error)")
         }
