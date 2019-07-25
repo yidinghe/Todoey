@@ -9,7 +9,7 @@
 import RealmSwift
 import UIKit
 
-class CategoryViewController: UITableViewController {
+class CategoryViewController: SwipeTableViewController {
     let realm = try! Realm()
     var categoryArray: Results<Category>?
     
@@ -22,6 +22,8 @@ class CategoryViewController: UITableViewController {
         // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
         // self.navigationItem.rightBarButtonItem = self.editButtonItem
         loadItems()
+        
+        tableView.rowHeight = 80.0
     }
     
     // MARK: - Table view data source
@@ -32,8 +34,7 @@ class CategoryViewController: UITableViewController {
     }
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "CategoryCell", for: indexPath)
-        
+        let cell = super.tableView(tableView, cellForRowAt: indexPath)
         cell.textLabel?.text = categoryArray?[indexPath.row].name ?? "No Category added yet"
         return cell
     }
@@ -87,5 +88,17 @@ class CategoryViewController: UITableViewController {
         categoryArray = realm.objects(Category.self)
         
         tableView.reloadData()
+    }
+    
+    override func updateModel(at indexPeth: IndexPath) {
+        if let categoryForDelete = categoryArray?[indexPeth.row] {
+            do {
+                try realm.write {
+                    realm.delete(categoryForDelete)
+                }
+            } catch {
+                print("Error delete \(error)")
+            }
+        }
     }
 }

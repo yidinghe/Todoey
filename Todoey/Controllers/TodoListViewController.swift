@@ -9,7 +9,7 @@
 import RealmSwift
 import UIKit
 
-class TodoListViewController: UITableViewController {
+class TodoListViewController: SwipeTableViewController {
     var todoItems: Results<Item>?
 
     let realm = try! Realm()
@@ -26,6 +26,7 @@ class TodoListViewController: UITableViewController {
         super.viewDidLoad()
         // Do any additional setup after loading the view.
         loadItems()
+        tableView.rowHeight = 80.0
     }
 
     // MARK: - Tableview Datasource Methods
@@ -35,7 +36,7 @@ class TodoListViewController: UITableViewController {
     }
 
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "ToDoItemCell", for: indexPath)
+        let cell = super.tableView(tableView, cellForRowAt: indexPath)
         if let item = todoItems?[indexPath.row] {
             cell.textLabel?.text = item.title
             cell.accessoryType = item.done ? .checkmark : .none
@@ -49,7 +50,6 @@ class TodoListViewController: UITableViewController {
     // MARK: - Tableview Delegate Methods
 
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-
         if let item = todoItems?[indexPath.row] {
             do {
                 try realm.write {
@@ -104,12 +104,24 @@ class TodoListViewController: UITableViewController {
 
         tableView.reloadData()
     }
+
+    override func updateModel(at indexPeth: IndexPath) {
+        if let itemForDelete = todoItems?[indexPeth.row] {
+            do {
+                try realm.write {
+                    realm.delete(itemForDelete)
+                }
+            } catch {
+                print("Error delete \(error)")
+            }
+        }
+    }
 }
 
 extension TodoListViewController: UISearchBarDelegate {
     func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
         todoItems = todoItems?.filter("title CONTAINS[cd] %@", searchBar.text!).sorted(byKeyPath: "dateCreated", ascending: true)
-        
+
         tableView.reloadData()
     }
 
