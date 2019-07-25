@@ -26,7 +26,6 @@ class TodoListViewController: SwipeTableViewController {
         super.viewDidLoad()
         // Do any additional setup after loading the view.
         loadItems()
-        tableView.rowHeight = 80.0
     }
 
     // MARK: - Tableview Datasource Methods
