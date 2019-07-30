@@ -6,9 +6,9 @@
 //  Copyright © 2019 Yiding He. All rights reserved.
 //
 
+import ChameleonFramework
 import RealmSwift
 import UIKit
-import ChameleonFramework
 
 class CategoryViewController: SwipeTableViewController {
     let realm = try! Realm()
@@ -35,8 +35,14 @@ class CategoryViewController: SwipeTableViewController {
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = super.tableView(tableView, cellForRowAt: indexPath)
-        cell.textLabel?.text = categoryArray?[indexPath.row].name ?? "No Category added yet"
-        cell.backgroundColor = UIColor(hexString: categoryArray?[indexPath.row].color ?? "28AAC0")
+        
+        if let category = categoryArray?[indexPath.row] {
+            guard let categoryColor = UIColor(hexString: category.color) else { fatalError() }
+            
+            cell.textLabel?.text = category.name
+            cell.backgroundColor = categoryColor
+            cell.textLabel?.textColor = ContrastColorOf(categoryColor, returnFlat: true)
+        }
         
         return cell
     }

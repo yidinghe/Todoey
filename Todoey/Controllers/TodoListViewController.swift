@@ -14,7 +14,7 @@ class TodoListViewController: SwipeTableViewController {
     var todoItems: Results<Item>?
 
     let realm = try! Realm()
-
+    @IBOutlet var searchBar: UISearchBar!
     var selectedCategory: Category? {
         didSet {
             loadItems()
@@ -27,7 +27,30 @@ class TodoListViewController: SwipeTableViewController {
         super.viewDidLoad()
         // Do any additional setup after loading the view.
         tableView.separatorStyle = .none
+
         loadItems()
+    }
+
+    override func viewWillAppear(_ animated: Bool) {
+        guard let navBar = navigationController?.navigationBar else {
+            fatalError("Navigation controller does not exist.")
+        }
+
+        guard let colorHex = selectedCategory?.color else { fatalError() }
+        title = selectedCategory!.name
+
+        guard let navBarColor = UIColor(hexString: colorHex) else { fatalError() }
+        navBar.barTintColor = navBarColor
+        navBar.tintColor = ContrastColorOf(navBarColor, returnFlat: true)
+        navBar.largeTitleTextAttributes = [NSAttributedString.Key.foregroundColor: ContrastColorOf(navBarColor, returnFlat: true)]
+        searchBar.barTintColor = navBarColor
+    }
+
+    override func viewWillDisappear(_ animated: Bool) {
+        guard let originalColor = UIColor(hexString: "1D9BF6") else { fatalError() }
+        navigationController?.navigationBar.barTintColor = originalColor
+        navigationController?.navigationBar.tintColor = FlatWhite()
+        navigationController?.navigationBar.largeTitleTextAttributes = [NSAttributedString.Key.foregroundColor: FlatWhite()]
     }
 
     // MARK: - Tableview Datasource Methods
